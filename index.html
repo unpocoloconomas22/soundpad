@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <title>Virtual Soundboard</title>
+  <style>
+    body {
+      background-color: #f0f0f0;
+      font-family: Arial, sans-serif;
+    }
+
+    .main-title {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    #app-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      margin-top: 50px;
+      position: relative;
+    }
+
+    #pad {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .key-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .key {
+      position: absolute;
+      width: 10%; /* Ajustado para un diseño más responsivo */
+      padding-bottom: 10%;
+      background: rgba(0, 0, 0, 0.1); /* Fondo semi-transparente */
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.07s ease-in-out;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.5em;
+      color: white;
+      text-shadow: 1px 1px 2px black;
+      user-select: none;
+    }
+
+    .key.playing {
+      background: #800000;
+      transform: scale(1.1);
+      border-color: #ff0000;
+    }
+
+    /* Posicionamiento de las teclas */
+    #E { top: 27%; left: 34.5%; }
+    #R { top: 27%; left: 45.5%; }
+    #T { top: 27%; left: 56.5%; }
+    #Y { top: 27%; left: 67.5%; }
+
+    #D { top: 41%; left: 34.5%; }
+    #F { top: 41%; left: 45.5%; }
+    #G { top: 41%; left: 56.5%; }
+    #H { top: 41%; left: 67.5%; }
+
+    #C { top: 55%; left: 34.5%; }
+    #V { top: 55%; left: 45.5%; }
+    #B { top: 55%; left: 56.5%; }
+    #N { top: 55%; left: 67.5%; }
+  </style>
+</head>
+<body>
+  <h1 class="main-title">My Soundboard</h1>
+  <div id="app-container">
+    <img id="pad" src="https://raw.githubusercontent.com/brampydampy/VIRTUAL-SOUNDBOARD/refs/heads/master/img/Drumpad.png" alt="drumpad">
+    <div class="key-container">
+      <div id="E" data-key="69" class="key"><kbd>E</kbd></div>
+      <div id="R" data-key="82" class="key"><kbd>R</kbd></div>
+      <div id="T" data-key="84" class="key"><kbd>T</kbd></div>
+      <div id="Y" data-key="89" class="key"><kbd>Y</kbd></div>
+      <div id="D" data-key="68" class="key"><kbd>D</kbd></div>
+      <div id="F" data-key="70" class="key"><kbd>F</kbd></div>
+      <div id="G" data-key="71" class="key"><kbd>G</kbd></div>
+      <div id="H" data-key="72" class="key"><kbd>H</kbd></div>
+      <div id="C" data-key="67" class="key"><kbd>C</kbd></div>
+      <div id="V" data-key="86" class="key"><kbd>V</kbd></div>
+      <div id="B" data-key="66" class="key"><kbd>B</kbd></div>
+      <div id="N" data-key="78" class="key"><kbd>N</kbd></div>
+    </div>
+  </div>
+
+  <div id="audio-files">
+    <audio data-key="69" src="https://raw.githubusercontent.com/brampydampy/VIRTUAL-SOUNDBOARD/refs/heads/master/audio/boom.mp3"></audio>
+    <audio data-key="82" src="https://raw.githubusercontent.com/brampydampy/VIRTUAL-SOUNDBOARD/refs/heads/master/audio/baby.mp3"></audio>
+    <audio data-key="84" src="https://raw.githubusercontent.com/brampydampy/VIRTUAL-SOUNDBOARD/refs/heads/master/audio/knock.mp3"></audio>
+    <audio data-key="89" src="https://raw.githubusercontent.com/brampydampy/VIRTUAL-SOUNDBOARD/refs/heads/master/audio/sitcom.mp3"></audio>
+    <audio data-key="68" src="https://raw.githubusercontent.com/brampydampy/VIRTUAL-SOUNDBOARD/refs/heads/master/audio/laugh-long.ogg"></audio>
+    <audio data-key="70" src="https://raw.githubusercontent.com/brampydampy/VIRTUAL-SOUNDBOARD/refs/heads/master/audio/laugh-short.ogg"></audio>
+    <audio data-key="71" src="https://raw.githubusercontent.com/brampydampy/VIRTUAL-SOUNDBOARD/refs/heads/master/drums/hihat-open.wav"></audio>
+    <audio data-key="72" src="https://raw.githubusercontent.com/brampydampy/VIRTUAL-SOUNDBOARD/refs/heads/master/drums/hihat-close.wav"></audio>
+    <audio data-key="67" src="https://raw.githubusercontent.com/brampydampy/VIRTUAL-SOUNDBOARD/refs/heads/master/drums/kick.wav"></audio>
+    <audio data-key="86" src="https://raw.githubusercontent.com/brampydampy/VIRTUAL-SOUNDBOARD/refs/heads/master/drums/snare.wav"></audio>
+    <audio data-key="66" src="https://raw.githubusercontent.com/brampydampy/VIRTUAL-SOUNDBOARD/refs/heads/master/drums/low-tom.wav"></audio>
+    <audio data-key="78" src="https://raw.githubusercontent.com/brampydampy/VIRTUAL-SOUNDBOARD/refs/heads/master/drums/crash.wav"></audio>
+  </div>
+
+  <script>
+    function playSound(e) {
+      const keyCode = e.keyCode || this.getAttribute('data-key');
+      const audioElement = document.querySelector(`audio[data-key="${keyCode}"]`);
+      const keyElement = document.querySelector(`div[data-key="${keyCode}"]`);
+
+      if (!audioElement || !keyElement) return;
+
+      audioElement.currentTime = 0;
+      audioElement.play();
+
+      keyElement.classList.add('playing');
+      setTimeout(() => {
+        keyElement.classList.remove('playing');
+      }, 100);
+    }
+
+    const keys = document.querySelectorAll('.key');
+    keys.forEach(key => key.addEventListener('click', playSound));
+    window.addEventListener('keydown', playSound);
+  </script>
+</body>
+</html>
+
